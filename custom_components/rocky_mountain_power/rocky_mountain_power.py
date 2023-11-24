@@ -508,8 +508,8 @@ class RockyMountainPower:
         for read in reads:
             result.append(
                 CostRead(
-                    start_time=datetime.fromisoformat(read["startTime"]),
-                    end_time=datetime.fromisoformat(read["endTime"]),
+                    start_time=read["startTime"],
+                    end_time=read["endTime"],
                     consumption=read["usage"],
                     provided_cost=read["amount"] or 0,
                 )
