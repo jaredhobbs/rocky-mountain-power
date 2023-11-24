@@ -290,7 +290,7 @@ class RockyMountainPowerUtility:
                 except ElementClickInterceptedException:
                     break
                 try:
-                    self.wait.until(lambda _: len(self.get_xhrs()) > 0)
+                    self.wait.until(lambda _: xhr_url in self.get_xhrs())
                 except TimeoutException:
                     break
         return usage
@@ -331,7 +331,7 @@ class RockyMountainPowerUtility:
                 except ElementClickInterceptedException:
                     break
                 try:
-                    self.wait.until(lambda _: len(self.get_xhrs()) > 0)
+                    self.wait.until(lambda _: xhr_url in self.get_xhrs())
                 except TimeoutException:
                     break
         return usage
