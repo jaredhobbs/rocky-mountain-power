@@ -461,7 +461,7 @@ class RockyMountainPower:
         return Account(
             customer=Customer(uuid=self.customer_id),
             uuid=account["accountNumber"],
-            utility_account_id=account["accountNumber"].replace(" ", "_"),
+            utility_account_id=self.customer_id,
         )
 
     def get_forecast(self) -> list[Forecast]:
@@ -478,7 +478,7 @@ class RockyMountainPower:
                     account=Account(
                         customer=Customer(uuid=self.customer_id),
                         uuid=self.account["accountNumber"],
-                        utility_account_id=self.account["accountNumber"],
+                        utility_account_id=self.customer_id,
                     ),
                     start_date=date.fromisoformat(forecast["startDateForAMIAcctView"]),
                     end_date=date.fromisoformat(forecast["endDateForAMIAcctView"]),
