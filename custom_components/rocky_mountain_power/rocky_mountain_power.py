@@ -10,6 +10,8 @@ import json
 import logging
 from typing import Any, Optional
 
+import arrow
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
@@ -23,6 +25,7 @@ locale.setlocale(locale.LC_ALL, "en_US")
 
 class RockyMountainPowerUtility:
     LOGIN_URL = "https://csapps.rockymountainpower.net/idm/login"
+    TZ = "America/Denver"
 
     def __init__(self, selenium_host: str = "localhost"):
         self.selenium_host: str = selenium_host
@@ -229,7 +232,7 @@ class RockyMountainPowerUtility:
         #   "avgTemperature":"62.78"
         # },
         for d in details.get("getUsageHistoryAndGraphDataV1ResponseBody", {}).get("usageHistory", {}).get("usageHistoryLineItem", []):
-            end_time = datetime.fromisoformat(d["usagePeriodEndDate"])
+            end_time = arrow.get(datetime.fromisoformat(d["usagePeriodEndDate"]), self.TZ).datetime
             start_time = end_time - timedelta(days=int(d["elapsedDays"]))
             amount = None
             try:
@@ -268,7 +271,7 @@ class RockyMountainPowerUtility:
             #   "displayDollarAmount":"Y"
             # },
             for d in details.get("getUsageForDateRangeResponseBody", {}).get("dailyUsageList", {}).get("usgHistoryLineItem", []):
-                end_time = datetime.fromisoformat(d["usagePeriodEndDate"])
+                end_time = arrow.get(datetime.fromisoformat(d["usagePeriodEndDate"]), self.TZ).datetime
                 start_time = end_time - timedelta(days=1)
                 amount = None
                 try:
@@ -314,7 +317,7 @@ class RockyMountainPowerUtility:
             #   "usage":"1.682"
             # },
             for d in details.get("getIntervalUsageForDateResponseBody", {}).get("response", {}).get("intervalDataResponse", []):
-                end_time = datetime.fromisoformat(f"{d['readDate']}T{d['readTime'].replace('24', '00')}:00")
+                end_time = arrow.get(datetime.fromisoformat(f"{d['readDate']}T{d['readTime'].replace('24', '00')}:00"), self.TZ).datetime
                 start_time = end_time - timedelta(hours=1)
                 usage.append({
                     "startTime": start_time,
@@ -480,9 +483,9 @@ class RockyMountainPower:
                         uuid=self.account["accountNumber"],
                         utility_account_id=self.customer_id,
                     ),
-                    start_date=date.fromisoformat(forecast["startDateForAMIAcctView"]),
-                    end_date=date.fromisoformat(forecast["endDateForAMIAcctView"]),
-                    current_date=date.today(),
+                    start_date=arrow.get(date.fromisoformat(forecast["startDateForAMIAcctView"]), self.utility.TZ).datetime,
+                    end_date=arrow.get(date.fromisoformat(forecast["endDateForAMIAcctView"]), self.utility.TZ).datetime,
+                    current_date=arrow.get(date.today(), self.utility.TZ).datetime,
                     forecasted_cost=float(forecast.get("projectedCost", 0)),
                     forecasted_cost_low=float(forecast.get("projectedCostLow", 0)),
                     forecasted_cost_high=float(forecast.get("projectedCostHigh", 0)),
