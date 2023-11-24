@@ -5,11 +5,6 @@ from collections.abc import Mapping
 import logging
 from typing import Any
 
-from rocky_mountain_power import (
-    CannotConnect,
-    InvalidAuth,
-    RockyMountainPower,
-)
 import voluptuous as vol
 
 from homeassistant import config_entries
@@ -18,6 +13,11 @@ from homeassistant.core import HomeAssistant, callback
 from homeassistant.data_entry_flow import FlowResult
 
 from .const import CONF_SELENIUM_HOST, DOMAIN
+from .rocky_mountain_power import (
+    CannotConnect,
+    InvalidAuth,
+    RockyMountainPower,
+)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -30,7 +30,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
-def _validate_login(login_data: dict[str, str]) -> dict[str, str]:
+async def _validate_login(login_data: dict[str, str]) -> dict[str, str]:
     """Validate login data and return any errors."""
     api = RockyMountainPower(
         login_data[CONF_USERNAME],
@@ -71,7 +71,7 @@ class RockyMountainPowerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             )
 
-            errors = _validate_login(user_input)
+            errors = await self.hass.async_add_executor_job(_validate_login, args=(user_input,))
             if not errors:
                 return self._async_create_rocky_mountain_power_entry(user_input)
 
@@ -102,7 +102,7 @@ class RockyMountainPowerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             data = {**self.reauth_entry.data, **user_input}
-            errors = _validate_login(data)
+            errors = await self.hass.async_add_executor_job(_validate_login, args=(data,))
             if not errors:
                 self.hass.config_entries.async_update_entry(
                     self.reauth_entry, data=data

@@ -4,14 +4,6 @@ import logging
 from types import MappingProxyType
 from typing import Any, cast
 
-from rocky_mountain_power import (
-    AggregateType,
-    CostRead,
-    Forecast,
-    InvalidAuth,
-    RockyMountainPower,
-)
-
 from homeassistant.components.recorder import get_instance
 from homeassistant.components.recorder.models import StatisticData, StatisticMetaData
 from homeassistant.components.recorder.statistics import (
@@ -25,6 +17,13 @@ from homeassistant.exceptions import ConfigEntryAuthFailed
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator
 
 from .const import CONF_SELENIUM_HOST, DOMAIN
+from .rocky_mountain_power import (
+    AggregateType,
+    CostRead,
+    Forecast,
+    InvalidAuth,
+    RockyMountainPower,
+)
 
 _LOGGER = logging.getLogger(__name__)
 

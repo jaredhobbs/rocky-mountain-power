@@ -4,8 +4,6 @@ from __future__ import annotations
 from collections.abc import Callable
 from dataclasses import dataclass
 
-from rocky_mountain_power import Forecast
-
 from homeassistant.components.sensor import (
     SensorDeviceClass,
     SensorEntity,
@@ -13,7 +11,6 @@ from homeassistant.components.sensor import (
     SensorStateClass,
 )
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import UnitOfEnergy, UnitOfVolume
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceEntryType, DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -22,6 +19,7 @@ from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from .const import DOMAIN
 from .coordinator import RockyMountainPowerCoordinator
+from .rocky_mountain_power import Forecast
 
 
 @dataclass
