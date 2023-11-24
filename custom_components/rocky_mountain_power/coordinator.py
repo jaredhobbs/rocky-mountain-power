@@ -91,8 +91,8 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
                 account.utility_account_id,
             )
         )
-        cost_statistic_id = f"{DOMAIN}:{id_prefix}_energy_cost"
-        consumption_statistic_id = f"{DOMAIN}:{id_prefix}_energy_consumption"
+        cost_statistic_id = f"{DOMAIN}:{id_prefix}_energy_cost".replace("-", "_")
+        consumption_statistic_id = f"{DOMAIN}:{id_prefix}_energy_consumption".replace("-", "_")
         _LOGGER.debug(
             "Updating Statistics for %s and %s",
             cost_statistic_id,
