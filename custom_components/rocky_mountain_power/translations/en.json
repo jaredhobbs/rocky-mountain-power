@@ -1,0 +1,30 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Rocky Mountain Power",
+        "description": "Make sure multi factor authentication has been disabled.",
+        "data": {
+          "username": "Username",
+          "password": "Password",
+          "selenium_host": "Selenium host"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Reauthenticate",
+        "data": {
+          "username": "Username",
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to load Rocky Mountain Power",
+      "invalid_auth": "Failed to login"
+    },
+    "abort": {
+      "already_configured": "You have already configured your account",
+      "reauth_successful": "You have successfully re-authenticated"
+    }
+  }
+}
