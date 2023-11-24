@@ -30,7 +30,7 @@ STEP_USER_DATA_SCHEMA = vol.Schema(
 )
 
 
-async def _validate_login(login_data: dict[str, str]) -> dict[str, str]:
+def _validate_login(login_data: dict[str, str]) -> dict[str, str]:
     """Validate login data and return any errors."""
     api = RockyMountainPower(
         login_data[CONF_USERNAME],

@@ -69,22 +69,22 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
             # Login expires after a few minutes.
             # Given the infrequent updating (every 12h)
             # assume previous session has expired and re-login.
-            self.api.login()
+            await self.hass.async_add_executor_job(self.api.login)
         except InvalidAuth as err:
             raise ConfigEntryAuthFailed from err
         else:
-            forecasts: list[Forecast] = await self.api.async_get_forecast()
+            forecasts: list[Forecast] = await self.hass.async_add_executor_job(self.api.get_forecast)
             _LOGGER.debug("Updating sensor data with: %s", forecasts)
             # Because Rocky Mountain Power provides historical usage/cost with a delay of a couple of days
             # we need to insert data into statistics.
             await self._insert_statistics()
         finally:
-            self.api.end_session()
+            await self.hass.async_add_executor_job(self.api.end_session)
         return {forecast.account.utility_account_id: forecast for forecast in forecasts}
 
     async def _insert_statistics(self) -> None:
         """Insert Rocky Mountain Power statistics."""
-        account = await self.api.async_get_account()
+        account = await self.hass.async_add_executor_job(self.api.get_account)
         id_prefix = "_".join(
             (
                 "elec",
@@ -186,14 +186,14 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
         """
         cost_reads = []
 
-        cost_reads.extend(await self.api.async_get_cost_reads(AggregateType.MONTH))
-        cost_reads += await self.api.async_get_cost_reads(AggregateType.DAY, period=24)
-        cost_reads += await self.api.async_get_cost_reads(AggregateType.HOUR, period=60)
+        cost_reads.extend(await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.MONTH))
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY, period=24)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, period=60)
         return cost_reads
 
     async def _async_get_recent_cost_reads(self) -> list[CostRead]:
         """Get cost reads within the past 30 days to allow corrections in data from utilities."""
         cost_reads = []
-        cost_reads += await self.api.async_get_cost_reads(AggregateType.DAY)
-        cost_reads += await self.api.async_get_cost_reads(AggregateType.HOUR)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR)
         return cost_reads

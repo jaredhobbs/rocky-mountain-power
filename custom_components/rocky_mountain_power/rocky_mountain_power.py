@@ -449,16 +449,16 @@ class RockyMountainPower:
     def end_session(self) -> None:
         self.utility.on_quit()
 
-    async def async_get_account(self) -> Account:
+    def get_account(self) -> Account:
         """Get the account for the signed in user."""
-        account = await self._async_get_account()
+        account = self._get_account()
         return Account(
             customer=Customer(uuid=self.customer_id),
             uuid=account["accountNumber"],
             utility_account_id=account["accountNumber"],
         )
 
-    async def async_get_forecast(self) -> list[Forecast]:
+    def get_forecast(self) -> list[Forecast]:
         """Get current and forecasted usage and cost for the current monthly bill.
 
         One forecast for each account, typically one for electricity.
@@ -484,7 +484,7 @@ class RockyMountainPower:
             )
         return forecasts
 
-    async def _async_get_account(self) -> Any:
+    def _get_account(self) -> Any:
         """Get account associated with the user."""
         # Cache the account
         if not self.account:
@@ -493,7 +493,7 @@ class RockyMountainPower:
         assert self.account
         return self.account
 
-    async def async_get_cost_reads(
+    def get_cost_reads(
         self,
         aggregate_type: AggregateType,
         period: Optional[int] = 1,
@@ -503,7 +503,7 @@ class RockyMountainPower:
         The resolution is typically hour, day, or month.
         Rocky Mountain Power typically keeps historical cost data for 2 years.
         """
-        reads = await self._async_get_dated_data(aggregate_type, period=period)
+        reads = self._get_dated_data(aggregate_type, period=period)
         result = []
         for read in reads:
             result.append(
@@ -522,7 +522,7 @@ class RockyMountainPower:
                 break
         return result
 
-    async def _async_get_dated_data(
+    def _get_dated_data(
         self,
         aggregate_type: AggregateType,
         period: Optional[int] = 1,
