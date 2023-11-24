@@ -14,7 +14,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
 
 _LOGGER = logging.getLogger(__file__)
 DEBUG_LOG_RESPONSE = False
@@ -285,7 +285,10 @@ class RockyMountainPowerUtility:
             if months > 0:
                 self.xhrs = {}
                 target = self.get_el(By.CSS_SELECTOR, "button.link", text="PREVIOUS")
-                target.click()
+                try:
+                    target.click()
+                except ElementClickInterceptedException:
+                    break
                 try:
                     self.wait.until(lambda _: len(self.get_xhrs()) > 0)
                 except TimeoutException:
@@ -323,7 +326,10 @@ class RockyMountainPowerUtility:
             if days > 0:
                 self.xhrs = {}
                 target = self.get_el(By.CSS_SELECTOR, "button.link", text="PREVIOUS")
-                target.click()
+                try:
+                    target.click()
+                except ElementClickInterceptedException:
+                    break
                 try:
                     self.wait.until(lambda _: len(self.get_xhrs()) > 0)
                 except TimeoutException:
