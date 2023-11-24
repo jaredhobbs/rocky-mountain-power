@@ -461,7 +461,7 @@ class RockyMountainPower:
         return Account(
             customer=Customer(uuid=self.customer_id),
             uuid=account["accountNumber"],
-            utility_account_id=account["accountNumber"],
+            utility_account_id=account["accountNumber"].replace(" ", "_"),
         )
 
     def get_forecast(self) -> list[Forecast]:
