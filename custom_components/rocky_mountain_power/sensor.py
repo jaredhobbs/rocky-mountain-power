@@ -80,12 +80,12 @@ async def async_setup_entry(
     entities: list[RockyMountainPowerSensor] = []
     forecasts = coordinator.data.values()
     for forecast in forecasts:
-        device_id = f"{coordinator.api.utility.subdomain()}_{forecast.account.utility_account_id}"
+        device_id = f"rocky_mountain_power_{forecast.account.utility_account_id}"
         device = DeviceInfo(
             identifiers={(DOMAIN, device_id)},
-            name=f"{forecast.account.meter_type.name} account {forecast.account.utility_account_id}",
+            name=f"Electric account {forecast.account.utility_account_id}",
             manufacturer="Rocky Mountain Power",
-            model=coordinator.api.utility.name(),
+            model="Rocky Mountain Power",
             entry_type=DeviceEntryType.SERVICE,
         )
         sensors: tuple[RockyMountainPowerEntityDescription, ...] = ELEC_SENSORS
