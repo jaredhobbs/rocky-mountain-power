@@ -1,0 +1,9 @@
+{
+    "name": "Rocky Mountain Power",
+    "render_readme": true,
+    "hacs": "1.6.0",
+    "domains": [
+        "energy"
+    ],
+    "homeassistant": "2023.11.3"
+}

@@ -1,0 +1,13 @@
+{
+  "domain": "rocky_mountain_power",
+  "name": "Rocky Mountain Power",
+  "version": "0.1.0",
+  "codeowners": ["@jaredhobbs"],
+  "config_flow": true,
+  "dependencies": ["recorder"],
+  "documentation": "https://github.com/jaredhobbs/rocky-mountain-power",
+  "issue_tracker": "https://github.com/jaredhobbs/rocky-mountain-power/issues",
+  "iot_class": "cloud_polling",
+  "loggers": ["rocky_mountain_power"],
+  "requirements": ["selenium==4.15.2"]
+}
