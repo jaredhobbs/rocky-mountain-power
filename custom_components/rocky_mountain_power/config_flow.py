@@ -71,7 +71,7 @@ class RockyMountainPowerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 }
             )
 
-            errors = await self.hass.async_add_executor_job(_validate_login, args=(user_input,))
+            errors = await self.hass.async_add_executor_job(_validate_login, user_input)
             if not errors:
                 return self._async_create_rocky_mountain_power_entry(user_input)
 
@@ -102,7 +102,7 @@ class RockyMountainPowerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         errors: dict[str, str] = {}
         if user_input is not None:
             data = {**self.reauth_entry.data, **user_input}
-            errors = await self.hass.async_add_executor_job(_validate_login, args=(data,))
+            errors = await self.hass.async_add_executor_job(_validate_login, data)
             if not errors:
                 self.hass.config_entries.async_update_entry(
                     self.reauth_entry, data=data
