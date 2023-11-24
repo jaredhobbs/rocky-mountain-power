@@ -187,8 +187,8 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
         cost_reads = []
 
         cost_reads.extend(await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.MONTH))
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY, period=24)
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, period=60)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY, 24)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 60)
         return cost_reads
 
     async def _async_get_recent_cost_reads(self) -> list[CostRead]:
