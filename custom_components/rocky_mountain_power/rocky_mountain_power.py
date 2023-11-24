@@ -200,7 +200,7 @@ class RockyMountainPowerUtility:
         #   "noDaysIntoBillingCycle":9,
         #   "isNetMeterFlag":false
         # }
-        self.forecast = details["getMeterTypeResponseBody"]
+        self.forecast = details.get("getMeterTypeResponseBody", {})
         return self.forecast
 
     def get_usage_by_month(self):
@@ -228,7 +228,7 @@ class RockyMountainPowerUtility:
         #   "missingDataFlag":"N",
         #   "avgTemperature":"62.78"
         # },
-        for d in details["getUsageHistoryAndGraphDataV1ResponseBody"]["usageHistory"]["usageHistoryLineItem"]:
+        for d in details.get("getUsageHistoryAndGraphDataV1ResponseBody", {}).get("usageHistory", {}).get("usageHistoryLineItem", []):
             end_time = datetime.fromisoformat(d["usagePeriodEndDate"])
             start_time = end_time - timedelta(days=int(d["elapsedDays"]))
             amount = None
@@ -267,7 +267,7 @@ class RockyMountainPowerUtility:
             #   "missingDataFlag":"N",
             #   "displayDollarAmount":"Y"
             # },
-            for d in details["getUsageForDateRangeResponseBody"]["dailyUsageList"]["usgHistoryLineItem"]:
+            for d in details.get("getUsageForDateRangeResponseBody", {}).get("dailyUsageList", {}).get("usgHistoryLineItem", []):
                 end_time = datetime.fromisoformat(d["usagePeriodEndDate"])
                 start_time = end_time - timedelta(days=1)
                 amount = None
@@ -313,7 +313,7 @@ class RockyMountainPowerUtility:
             #   "readTime":"01:00",
             #   "usage":"1.682"
             # },
-            for d in details["getIntervalUsageForDateResponseBody"]["response"]["intervalDataResponse"]:
+            for d in details.get("getIntervalUsageForDateResponseBody", {}).get("response", {}).get("intervalDataResponse", []):
                 end_time = datetime.fromisoformat(f"{d['readDate']}T{d['readTime'].replace('24', '00')}:00")
                 start_time = end_time - timedelta(hours=1)
                 usage.append({
