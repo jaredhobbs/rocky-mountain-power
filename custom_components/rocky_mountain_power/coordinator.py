@@ -195,5 +195,5 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
         """Get cost reads within the past 30 days to allow corrections in data from utilities."""
         cost_reads = []
         cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY)
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR)
+        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 5)
         return cost_reads

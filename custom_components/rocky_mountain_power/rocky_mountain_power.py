@@ -513,23 +513,14 @@ class RockyMountainPower:
         Rocky Mountain Power typically keeps historical cost data for 2 years.
         """
         reads = self._get_dated_data(aggregate_type, period=period)
-        result = []
-        for read in reads:
-            result.append(
-                CostRead(
-                    start_time=read["startTime"],
-                    end_time=read["endTime"],
-                    consumption=read["usage"],
-                    provided_cost=read["amount"] or 0,
-                )
-            )
-        # Remove last entries with 0 values
-        while result:
-            last = result.pop()
-            if last.provided_cost != 0 or last.consumption != 0:
-                result.append(last)
-                break
-        return result
+        return [
+            CostRead(
+                start_time=read["startTime"],
+                end_time=read["endTime"],
+                consumption=read["usage"],
+                provided_cost=read["amount"] or 0,
+            ) for read in reads
+        ]
 
     def _get_dated_data(
         self,

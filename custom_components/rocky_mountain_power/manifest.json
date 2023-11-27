@@ -1,7 +1,7 @@
 {
   "domain": "rocky_mountain_power",
   "name": "Rocky Mountain Power",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "codeowners": ["@jaredhobbs"],
   "config_flow": true,
   "dependencies": ["recorder"],
