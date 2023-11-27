@@ -243,7 +243,7 @@ class RockyMountainPowerUtility:
                 pass
             usage.append({
                 "startTime": start_time,
-                "endTime": end_time,
+                "endTime": end_time - timedelta(seconds=1),
                 "usage": float(d.get("kwhUsageQuantity", 0)),
                 "amount": amount,
             })
@@ -282,7 +282,7 @@ class RockyMountainPowerUtility:
                     pass
                 usage.append({
                     "startTime": start_time,
-                    "endTime": end_time,
+                    "endTime": end_time - timedelta(seconds=1),
                     "usage": float(d.get("kwhUsageQuantity", 0)),
                     "amount": amount,
                 })
@@ -323,7 +323,7 @@ class RockyMountainPowerUtility:
                 start_time = end_time - timedelta(hours=1)
                 usage.append({
                     "startTime": start_time,
-                    "endTime": end_time,
+                    "endTime": end_time - timedelta(seconds=1),
                     "usage": float(d.get("usage", 0)),
                     "amount": None,
                 })
