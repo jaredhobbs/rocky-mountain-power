@@ -3,6 +3,7 @@ import atexit
 import locale
 import os.path
 import sys
+import time
 import dataclasses
 from datetime import date, datetime, timedelta
 from enum import Enum
@@ -176,6 +177,7 @@ class RockyMountainPowerUtility:
         target.click()
         try:
             self.wait.until(EC.title_is("Energy usage"))
+            time.sleep(3)
         except:
             raise CannotConnect
 
