@@ -187,13 +187,13 @@ class RockyMountainPowerCoordinator(DataUpdateCoordinator[dict[str, Forecast]]):
         cost_reads = []
 
         cost_reads.extend(await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.MONTH))
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY, 24)
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 60)
+        cost_reads.extend(await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY, 24))
+        cost_reads.extend(await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 60))
+        cost_reads.sort(key=lambda x: x["startTime"])
         return cost_reads
 
     async def _async_get_recent_cost_reads(self) -> list[CostRead]:
-        """Get cost reads within the past 30 days to allow corrections in data from utilities."""
-        cost_reads = []
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.DAY)
-        cost_reads += await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 5)
+        """Get hourly reads within the past 7 days to allow corrections in data from utilities."""
+        cost_reads = await self.hass.async_add_executor_job(self.api.get_cost_reads, AggregateType.HOUR, 7)
+        cost_reads.sort(key=lambda x: x["startTime"])
         return cost_reads
