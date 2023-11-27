@@ -515,6 +515,7 @@ class RockyMountainPower:
         Rocky Mountain Power typically keeps historical cost data for 2 years.
         """
         reads = self._get_dated_data(aggregate_type, period=period)
+        reads.sort(key=lambda x: x["startTime"])
         return [
             CostRead(
                 start_time=read["startTime"],
