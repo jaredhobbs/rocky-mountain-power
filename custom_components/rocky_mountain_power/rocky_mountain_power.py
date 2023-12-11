@@ -94,8 +94,8 @@ class RockyMountainPowerUtility:
         )
         atexit.register(self.on_quit)
         sys.excepthook = self.on_quit
-        self.br.implicitly_wait(10)
-        self.wait = WebDriverWait(self.br, 10)
+        self.br.implicitly_wait(30)
+        self.wait = WebDriverWait(self.br, 30)
 
     def log_filter(self, log):
         return (
