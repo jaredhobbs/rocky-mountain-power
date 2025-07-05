@@ -17,7 +17,7 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException
+from selenium.common.exceptions import ElementClickInterceptedException, TimeoutException, NoSuchElementException
 
 _LOGGER = logging.getLogger(__file__)
 DEBUG_LOG_RESPONSE = False
@@ -173,8 +173,8 @@ class RockyMountainPowerUtility:
         return xhrs
 
     def goto_energy_usage(self):
-        target = self.get_el(By.LINK_TEXT, "Energy usage")
-        target.click()
+        self.br.fullscreen_window()
+        self.br.get("https://csapps.rockymountainpower.net/secure/my-account/energy-usage")
         try:
             self.wait.until(EC.title_is("Energy usage"))
             time.sleep(3)
@@ -235,7 +235,11 @@ class RockyMountainPowerUtility:
         # },
         for d in details.get("getUsageHistoryAndGraphDataV1ResponseBody", {}).get("usageHistory", {}).get("usageHistoryLineItem", []):
             end_time = arrow.get(datetime.fromisoformat(d["usagePeriodEndDate"]), self.TZ).datetime
-            start_time = end_time - timedelta(days=int(d["elapsedDays"]))
+            try:
+                start_time = end_time - timedelta(days=int(d["elapsedDays"]))
+            except KeyError:
+                # elapsedDays doesn't get returned in my API call
+                start_time = end_time.replace(day=1)
             amount = None
             try:
                 amount = locale.atof(d.get("invoiceAmount", "").strip("$")) or None
@@ -538,3 +542,46 @@ class RockyMountainPower:
             return self.utility.get_usage_by_hour(days=period)
         else:
             raise ValueError(f"aggregate_type {aggregate_type} is not valid")
+
+if __name__ == '__main__':
+    api = RockyMountainPower(
+        'USERNAME',
+        'PASSWORD',
+        'localhost') # localhost==selenium host
+
+    errors: dict[str, str] = {}
+    try:
+        api.login()
+        print("Logged in, trying to fetch forecasts")
+        forecasts = api.get_forecast()
+        print("Got forecasts")
+        print(forecasts)
+        print("Fetching cost reads")
+        cost_reads = api.get_cost_reads(AggregateType.MONTH)
+        print(cost_reads)
+
+        cost_reads = api.get_cost_reads(AggregateType.DAY, 24)
+        print(cost_reads)
+
+        cost_reads = api.get_cost_reads(AggregateType.HOUR, 60)
+        print(cost_reads)
+    except InvalidAuth:
+        errors["base"] = "invalid_auth"
+    except CannotConnect:
+        errors["base"] = "cannot_connect"
+    except NoSuchElementException as ne:
+        errors["no_such_element"] = ne
+        print(f"No such element: {ne}")
+        print(ne)
+    except Exception as e:
+        print("Unhandled exception")
+        print(e)
+        print(e.__class__.__name__)
+    finally:
+        api.end_session()
+
+    if errors:
+        print("Got errors")
+        print(errors)
+    else:
+        print("No errors")
